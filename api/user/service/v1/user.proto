@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package user.service.v1;
+
+option go_package = "api/user/service/v1;v1";
+
+service User {
+	rpc CreateUser (CreateUserReq) returns (CreateUserReply);
+	rpc GetUser (GetUserReq) returns (GetUserReply);
+	rpc GetUserByUsername(GetUserByUsernameReq) returns (GetUserByUsernameReply);
+	rpc ListUser (ListUserReq) returns (ListUserReply);
+	rpc VerifyPassword (VerifyPasswordReq) returns (VerifyPasswordReply);
+}
+
+message CreateUserReq {
+	string username = 1;
+	string password = 2;
+}
+message CreateUserReply {
+	int64 id = 1;
+	string username = 2;
+}
+
+message GetUserReq {
+	int64 id = 1;
+}
+message GetUserReply {
+	int64 id = 1;
+	string username = 2;
+}
+
+message ListUserReq {}
+message ListUserReply {
+	message User {
+		int64 id = 1;
+		string username = 2;
+	}
+	repeated User results = 1;
+}
+
+message VerifyPasswordReq {
+	string username = 1;
+	string password = 2;
+}
+
+message VerifyPasswordReply {
+	bool ok = 1;
+	int64 id = 2;
+}
+
+message GetUserByUsernameReq {
+	string username = 1;
+}
+
+message GetUserByUsernameReply {
+	int64 id = 1;
+	string username = 2;
+}

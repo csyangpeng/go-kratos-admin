@@ -31,14 +31,6 @@ api:
 	       --openapi_out=fq_schema_naming=true,default_response=false:. \
 	       $(API_PROTO_FILES)
 
-.PHONY: errors
-errors:
-	protoc --proto_path=. \
-             --proto_path=./third_party \
-             --go_out=paths=source_relative:. \
-             --go-errors_out=paths=source_relative:. \
-             $(API_PROTO_FILES)
-
 .PHONY: build
 # build
 build:
@@ -51,30 +43,12 @@ generate:
 	go get github.com/google/wire/cmd/wire@latest
 	go generate ./...
 
-.PHONY: validate
-# generate validate proto
-validate:
-	protoc --proto_path=. \
-		   --proto_path=./third_party \
-		   --go_out=paths=source_relative:. \
-		   --validate_out=paths=source_relative,lang=go:. \
-		   $(API_PROTO_FILES)
-
 .PHONY: all
 # generate all
 all:
 	make api;
 	make config;
 	make generate;
-
-.PHONY: swagger
-swagger:
-	protoc --proto_path=. \
-            --proto_path=./third_party \
-            --openapiv2_out . \
-            --openapiv2_opt logtostderr=true \
-            --openapiv2_opt json_names_for_fields=false \
-            api/center/admin/v1/center_admin.proto
 
 # show help
 help:

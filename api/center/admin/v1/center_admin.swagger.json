@@ -1,12 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "api/center/interface/v1/center_interface.proto",
+    "title": "api/center/admin/v1/center_admin.proto",
     "version": "version not set"
   },
   "tags": [
     {
-      "name": "CenterInterface"
+      "name": "CenterAdmin"
     }
   ],
   "consumes": [
@@ -16,9 +16,9 @@
     "application/json"
   ],
   "paths": {
-    "/v1/login": {
+    "/admin/v1/login": {
       "post": {
-        "operationId": "CenterInterface_Login",
+        "operationId": "CenterAdmin_Login",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -44,13 +44,13 @@
           }
         ],
         "tags": [
-          "CenterInterface"
+          "CenterAdmin"
         ]
       }
     },
-    "/v1/logout": {
+    "/admin/v1/logout": {
       "post": {
-        "operationId": "CenterInterface_Logout",
+        "operationId": "CenterAdmin_Logout",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -76,18 +76,18 @@
           }
         ],
         "tags": [
-          "CenterInterface"
+          "CenterAdmin"
         ]
       }
     },
-    "/v1/register": {
-      "post": {
-        "operationId": "CenterInterface_Register",
+    "/admin/v1/users/{id}": {
+      "get": {
+        "operationId": "CenterAdmin_GetUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1RegisterReply"
+              "$ref": "#/definitions/v1GetUserReply"
             }
           },
           "default": {
@@ -99,22 +99,21 @@
         },
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
+            "name": "id",
+            "in": "path",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1RegisterReq"
-            }
+            "type": "string",
+            "format": "int64"
           }
         ],
         "tags": [
-          "CenterInterface"
+          "CenterAdmin"
         ]
       }
     },
     "/v1/users": {
       "get": {
-        "operationId": "CenterInterface_ListUser",
+        "operationId": "CenterAdmin_ListUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -146,7 +145,7 @@
           }
         ],
         "tags": [
-          "CenterInterface"
+          "CenterAdmin"
         ]
       }
     }
@@ -194,6 +193,18 @@
         }
       }
     },
+    "v1GetUserReply": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
     "v1ListUserReply": {
       "type": "object",
       "properties": {
@@ -212,7 +223,7 @@
     "v1LoginReply": {
       "type": "object",
       "properties": {
-        "token": {
+        "Token": {
           "type": "string"
         }
       }
@@ -233,26 +244,6 @@
     },
     "v1LogoutReq": {
       "type": "object"
-    },
-    "v1RegisterReply": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "int64"
-        }
-      }
-    },
-    "v1RegisterReq": {
-      "type": "object",
-      "properties": {
-        "username": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        }
-      }
     }
   }
 }

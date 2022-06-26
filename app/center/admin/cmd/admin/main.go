@@ -7,24 +7,23 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
 	"go.opentelemetry.io/otel/sdk/resource"
+	tracesdk "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.10.0"
 	"os"
 
-	"github.com/csyangpeng/go-kratos-admin/app/center/interface/internal/conf"
+	"github.com/csyangpeng/go-kratos-admin/app/center/admin/internal/conf"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/http"
-
-	tracesdk "go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.10.0"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name = "gka.center.interface"
+	Name = "gka.center.admin"
 	// Version is the version of the compiled software.
 	Version = "v1"
 	// flagconf is the config flag.
@@ -39,7 +38,7 @@ func init() {
 
 func newApp(logger log.Logger, hs *http.Server, rr registry.Registrar) *kratos.App {
 	return kratos.New(
-		kratos.ID(id+".gka.center.interface"),
+		kratos.ID(id+".gka.center.admin"),
 		kratos.Name(Name),
 		kratos.Version(Version),
 		kratos.Metadata(map[string]string{}),
@@ -95,17 +94,17 @@ func main() {
 		panic(err)
 	}
 
-	var rc conf.Registry
-	if err := c.Scan(&rc); err != nil {
-		panic(err)
-	}
-
 	// 链路追踪
 	if err := setTracerProvider(bc.Trace.Endpoint); err != nil {
 		panic(err)
 	}
 
-	app, cleanup, err := wireApp(bc.Server, &rc, bc.Data, bc.Auth, logger)
+	var rc conf.Registry
+	if err := c.Scan(&rc); err != nil {
+		panic(err)
+	}
+
+	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Auth, &rc, logger)
 	if err != nil {
 		panic(err)
 	}

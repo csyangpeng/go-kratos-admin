@@ -1,0 +1,131 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/user/service/v1/user.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "User"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "ListUserReplyUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CreateUserReply": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GetUserByUsernameReply": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GetUserReply": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ListUserReply": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ListUserReplyUser"
+          }
+        }
+      }
+    },
+    "v1SaveUserReply": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1VerifyPasswordReply": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    }
+  }
+}

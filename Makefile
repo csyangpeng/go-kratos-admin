@@ -58,6 +58,15 @@ all:
 	make config;
 	make generate;
 
+.PHONY: swagger
+swagger:
+	protoc --proto_path=. \
+            --proto_path=./third_party \
+            --openapiv2_out . \
+            --openapiv2_opt logtostderr=true \
+            --openapiv2_opt json_names_for_fields=false \
+            api/center/interface/v1/center_interface.proto
+
 # show help
 help:
 	@echo ''

@@ -22,6 +22,7 @@ type UserRepo interface {
 	FindByUsername(ctx context.Context, username string) (*User, error)
 	CreateUser(ctx context.Context, u *User) (*User, error)
 	VerifyPassword(ctx context.Context, u *User) (bool, error)
+	ListUser(ctx context.Context, pageIndex, pageSize int) ([]*User, int, error)
 }
 
 type UserUseCase struct {
@@ -76,4 +77,8 @@ func (uc *UserUseCase) GetUserByUsername(ctx context.Context, req *v1.GetUserByU
 		Id:       user.Id,
 		Username: user.Username,
 	}, nil
+}
+
+func (uc *UserUseCase) List(ctx context.Context, pageIndex, pageSize int) ([]*User, int, error) {
+	return uc.repo.ListUser(ctx, pageIndex, pageSize)
 }

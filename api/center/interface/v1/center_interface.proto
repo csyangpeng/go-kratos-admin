@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package center.interface.v1;
 import "google/api/annotations.proto";
+import "validate/validate.proto";
 
 option go_package = "api/center/interface/v1;v1";
 
@@ -26,11 +27,17 @@ service CenterInterface {
       body: "*"
     };
   }
+
+  rpc ListUser (ListUserReq) returns (ListUserReply) {
+    option (google.api.http) = {
+      get: "/v1/users",
+    };
+  }
 }
 
 message RegisterReq {
-  string username = 1;
-  string password = 2;
+  string username = 1 [(validate.rules).string.min_len = 4];
+  string password = 2 [(validate.rules).string.min_len = 5];
 }
 
 message RegisterReply {
@@ -38,8 +45,8 @@ message RegisterReply {
 }
 
 message LoginReq {
-  string username = 1;
-  string password = 2;
+  string username = 1 [(validate.rules).string.min_len = 4];
+  string password = 2 [(validate.rules).string.min_len = 5];
 }
 
 message LoginReply {
@@ -52,4 +59,18 @@ message LogoutReq {
 
 message LogoutReply {
 
+}
+
+message ListUserReq {
+  int32 pageIndex = 1;
+  int32 pageSize = 2;
+}
+
+message ListUserReply {
+  message User {
+    int64 id = 1;
+    string username = 2;
+  }
+  repeated User results = 1;
+  int64 total = 2;
 }

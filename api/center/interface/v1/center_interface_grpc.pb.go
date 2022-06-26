@@ -25,6 +25,7 @@ type CenterInterfaceClient interface {
 	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterReply, error)
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginReply, error)
 	Logout(ctx context.Context, in *LogoutReq, opts ...grpc.CallOption) (*LogoutReply, error)
+	ListUser(ctx context.Context, in *ListUserReq, opts ...grpc.CallOption) (*ListUserReply, error)
 }
 
 type centerInterfaceClient struct {
@@ -62,6 +63,15 @@ func (c *centerInterfaceClient) Logout(ctx context.Context, in *LogoutReq, opts 
 	return out, nil
 }
 
+func (c *centerInterfaceClient) ListUser(ctx context.Context, in *ListUserReq, opts ...grpc.CallOption) (*ListUserReply, error) {
+	out := new(ListUserReply)
+	err := c.cc.Invoke(ctx, "/center.interface.v1.CenterInterface/ListUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CenterInterfaceServer is the server API for CenterInterface service.
 // All implementations must embed UnimplementedCenterInterfaceServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type CenterInterfaceServer interface {
 	Register(context.Context, *RegisterReq) (*RegisterReply, error)
 	Login(context.Context, *LoginReq) (*LoginReply, error)
 	Logout(context.Context, *LogoutReq) (*LogoutReply, error)
+	ListUser(context.Context, *ListUserReq) (*ListUserReply, error)
 	mustEmbedUnimplementedCenterInterfaceServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedCenterInterfaceServer) Login(context.Context, *LoginReq) (*Lo
 }
 func (UnimplementedCenterInterfaceServer) Logout(context.Context, *LogoutReq) (*LogoutReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+}
+func (UnimplementedCenterInterfaceServer) ListUser(context.Context, *ListUserReq) (*ListUserReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUser not implemented")
 }
 func (UnimplementedCenterInterfaceServer) mustEmbedUnimplementedCenterInterfaceServer() {}
 
@@ -152,6 +166,24 @@ func _CenterInterface_Logout_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CenterInterface_ListUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUserReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CenterInterfaceServer).ListUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/center.interface.v1.CenterInterface/ListUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CenterInterfaceServer).ListUser(ctx, req.(*ListUserReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CenterInterface_ServiceDesc is the grpc.ServiceDesc for CenterInterface service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var CenterInterface_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Logout",
 			Handler:    _CenterInterface_Logout_Handler,
+		},
+		{
+			MethodName: "ListUser",
+			Handler:    _CenterInterface_ListUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

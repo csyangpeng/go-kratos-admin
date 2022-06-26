@@ -51,3 +51,20 @@ func (s *UserService) VerifyPassword(ctx context.Context, req *v1.VerifyPassword
 		Ok: rv,
 	}, nil
 }
+
+func (s *UserService) ListUser(ctx context.Context, req *v1.ListUserReq) (*v1.ListUserReply, error) {
+	list, total, err := s.uc.List(ctx, int(req.PageIndex), int(req.PageSize))
+	if err != nil {
+		return nil, err
+	}
+	res := &v1.ListUserReply{}
+	res.Total = int64(total)
+	for _, user := range list {
+		res.Results = append(res.Results, &v1.ListUserReply_User{
+			Id:       user.Id,
+			Username: user.Username,
+		})
+	}
+
+	return res, nil
+}

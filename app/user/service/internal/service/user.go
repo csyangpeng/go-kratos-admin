@@ -21,6 +21,10 @@ func (s *UserService) CreateUser(ctx context.Context, req *v1.CreateUserReq) (*v
 	}, nil
 }
 
+func (s *UserService) Save(ctx context.Context, req *v1.SaveUserReq) (*v1.SaveUserReply, error) {
+	return s.uc.Save(ctx, req)
+}
+
 func (s *UserService) GetUser(ctx context.Context, req *v1.GetUserReq) (*v1.GetUserReply, error) {
 	user, err := s.uc.Get(ctx, req.Id)
 	if err != nil {

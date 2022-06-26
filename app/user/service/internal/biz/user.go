@@ -49,6 +49,19 @@ func (uc *UserUseCase) Create(ctx context.Context, u *User) (*User, error) {
 	return out, nil
 }
 
+func (uc *UserUseCase) Save(ctx context.Context, req *v1.SaveUserReq) (*v1.SaveUserReply, error) {
+	user := &User{
+		Username: req.Username,
+		Password: req.Password,
+	}
+	_, err := uc.Create(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+
+	return &v1.SaveUserReply{Id: user.Id}, nil
+}
+
 func (uc *UserUseCase) VerifyPassword(ctx context.Context, u *User) (bool, error) {
 	return uc.repo.VerifyPassword(ctx, u)
 }

@@ -184,24 +184,6 @@ components:
         center.admin.v1.LogoutReq:
             type: object
             properties: {}
-        center.interface.v1.ListUserReply:
-            type: object
-            properties:
-                results:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/center.interface.v1.ListUserReply_User'
-                total:
-                    type: integer
-                    format: int64
-        center.interface.v1.ListUserReply_User:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: int64
-                username:
-                    type: string
         center.interface.v1.LoginReply:
             type: object
             properties:

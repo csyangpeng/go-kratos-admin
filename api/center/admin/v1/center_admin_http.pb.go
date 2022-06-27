@@ -34,7 +34,7 @@ func RegisterCenterAdminHTTPServer(s *http.Server, srv CenterAdminHTTPServer) {
 	r.POST("/admin/v1/login", _CenterAdmin_Login1_HTTP_Handler(srv))
 	r.POST("/admin/v1/logout", _CenterAdmin_Logout1_HTTP_Handler(srv))
 	r.GET("/admin/v1/users/{id}", _CenterAdmin_GetUser0_HTTP_Handler(srv))
-	r.GET("/v1/users", _CenterAdmin_ListUser1_HTTP_Handler(srv))
+	r.GET("/v1/users", _CenterAdmin_ListUser0_HTTP_Handler(srv))
 }
 
 func _CenterAdmin_Login1_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.Context) error {
@@ -97,7 +97,7 @@ func _CenterAdmin_GetUser0_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http
 	}
 }
 
-func _CenterAdmin_ListUser1_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.Context) error {
+func _CenterAdmin_ListUser0_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in ListUserReq
 		if err := ctx.BindQuery(&in); err != nil {

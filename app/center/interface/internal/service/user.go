@@ -18,7 +18,3 @@ func (c *CenterInterface) Logout(ctx context.Context, req *v1.LogoutReq) (*v1.Lo
 	//TODO implement me
 	panic("implement me")
 }
-
-func (c *CenterInterface) ListUser(ctx context.Context, req *v1.ListUserReq) (*v1.ListUserReply, error) {
-	return c.uc.List(ctx, req)
-}

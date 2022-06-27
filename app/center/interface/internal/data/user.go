@@ -3,7 +3,6 @@ package data
 import (
 	"context"
 	"fmt"
-	v1 "github.com/csyangpeng/go-kratos-admin/api/center/interface/v1"
 	userv1 "github.com/csyangpeng/go-kratos-admin/api/user/service/v1"
 	"github.com/csyangpeng/go-kratos-admin/app/center/interface/internal/biz"
 	"github.com/go-kratos/kratos/v2/log"
@@ -55,23 +54,4 @@ func (r *userRepo) VerifyPassword(ctx context.Context, u *biz.User, password str
 	}
 
 	return nil
-}
-
-func (r *userRepo) ListUser(ctx context.Context, req *v1.ListUserReq) (*v1.ListUserReply, error) {
-	list, err := r.data.uc.ListUser(ctx, &userv1.ListUserReq{
-		PageIndex: req.PageIndex,
-		PageSize:  req.PageSize,
-	})
-	if err != nil {
-		return nil, err
-	}
-	v := &v1.ListUserReply{}
-	v.Total = list.Total
-	for _, result := range list.Results {
-		v.Results = append(v.Results, &v1.ListUserReply_User{
-			Id:       result.Id,
-			Username: result.Username,
-		})
-	}
-	return v, nil
 }

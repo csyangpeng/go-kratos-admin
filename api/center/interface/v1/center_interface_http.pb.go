@@ -17,13 +17,11 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationCenterInterfaceListUser = "/center.interface.v1.CenterInterface/ListUser"
 const OperationCenterInterfaceLogin = "/center.interface.v1.CenterInterface/Login"
 const OperationCenterInterfaceLogout = "/center.interface.v1.CenterInterface/Logout"
 const OperationCenterInterfaceRegister = "/center.interface.v1.CenterInterface/Register"
 
 type CenterInterfaceHTTPServer interface {
-	ListUser(context.Context, *ListUserReq) (*ListUserReply, error)
 	Login(context.Context, *LoginReq) (*LoginReply, error)
 	Logout(context.Context, *LogoutReq) (*LogoutReply, error)
 	Register(context.Context, *RegisterReq) (*RegisterReply, error)
@@ -34,7 +32,6 @@ func RegisterCenterInterfaceHTTPServer(s *http.Server, srv CenterInterfaceHTTPSe
 	r.POST("/v1/register", _CenterInterface_Register0_HTTP_Handler(srv))
 	r.POST("/v1/login", _CenterInterface_Login0_HTTP_Handler(srv))
 	r.POST("/v1/logout", _CenterInterface_Logout0_HTTP_Handler(srv))
-	r.GET("/v1/users", _CenterInterface_ListUser0_HTTP_Handler(srv))
 }
 
 func _CenterInterface_Register0_HTTP_Handler(srv CenterInterfaceHTTPServer) func(ctx http.Context) error {
@@ -94,27 +91,7 @@ func _CenterInterface_Logout0_HTTP_Handler(srv CenterInterfaceHTTPServer) func(c
 	}
 }
 
-func _CenterInterface_ListUser0_HTTP_Handler(srv CenterInterfaceHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in ListUserReq
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationCenterInterfaceListUser)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.ListUser(ctx, req.(*ListUserReq))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*ListUserReply)
-		return ctx.Result(200, reply)
-	}
-}
-
 type CenterInterfaceHTTPClient interface {
-	ListUser(ctx context.Context, req *ListUserReq, opts ...http.CallOption) (rsp *ListUserReply, err error)
 	Login(ctx context.Context, req *LoginReq, opts ...http.CallOption) (rsp *LoginReply, err error)
 	Logout(ctx context.Context, req *LogoutReq, opts ...http.CallOption) (rsp *LogoutReply, err error)
 	Register(ctx context.Context, req *RegisterReq, opts ...http.CallOption) (rsp *RegisterReply, err error)
@@ -126,19 +103,6 @@ type CenterInterfaceHTTPClientImpl struct {
 
 func NewCenterInterfaceHTTPClient(client *http.Client) CenterInterfaceHTTPClient {
 	return &CenterInterfaceHTTPClientImpl{client}
-}
-
-func (c *CenterInterfaceHTTPClientImpl) ListUser(ctx context.Context, in *ListUserReq, opts ...http.CallOption) (*ListUserReply, error) {
-	var out ListUserReply
-	pattern := "/v1/users"
-	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationCenterInterfaceListUser))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, err
 }
 
 func (c *CenterInterfaceHTTPClientImpl) Login(ctx context.Context, in *LoginReq, opts ...http.CallOption) (*LoginReply, error) {

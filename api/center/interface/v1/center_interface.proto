@@ -27,12 +27,6 @@ service CenterInterface {
       body: "*"
     };
   }
-
-  rpc ListUser (ListUserReq) returns (ListUserReply) {
-    option (google.api.http) = {
-      get: "/v1/users",
-    };
-  }
 }
 
 message RegisterReq {
@@ -59,18 +53,4 @@ message LogoutReq {
 
 message LogoutReply {
 
-}
-
-message ListUserReq {
-  int32 pageIndex = 1;
-  int32 pageSize = 2;
-}
-
-message ListUserReply {
-  message User {
-    int64 id = 1;
-    string username = 2;
-  }
-  repeated User results = 1;
-  int64 total = 2;
 }

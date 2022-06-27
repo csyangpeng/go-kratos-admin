@@ -6,6 +6,7 @@ option go_package = "api/user/service/v1;v1";
 
 service User {
 	rpc CreateUser (CreateUserReq) returns (CreateUserReply);
+	rpc Save(SaveUserReq) returns (SaveUserReply);
 	rpc GetUser (GetUserReq) returns (GetUserReply);
 	rpc GetUserByUsername(GetUserByUsernameReq) returns (GetUserByUsernameReply);
 	rpc ListUser (ListUserReq) returns (ListUserReply);
@@ -21,6 +22,16 @@ message CreateUserReply {
 	string username = 2;
 }
 
+message SaveUserReq {
+	int64 id = 1;
+	string username = 2;
+	string password = 3;
+}
+
+message SaveUserReply {
+	int64 id = 1;
+}
+
 message GetUserReq {
 	int64 id = 1;
 }
@@ -29,13 +40,17 @@ message GetUserReply {
 	string username = 2;
 }
 
-message ListUserReq {}
+message ListUserReq {
+	int32 pageIndex = 1;
+	int32 pageSize = 2;
+}
 message ListUserReply {
 	message User {
 		int64 id = 1;
 		string username = 2;
 	}
 	repeated User results = 1;
+	int64 total = 2;
 }
 
 message VerifyPasswordReq {

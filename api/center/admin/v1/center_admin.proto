@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package center.admin.v1;
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "api/center/admin/v1;v1";
+
+service CenterAdmin {
+	rpc Login(LoginReq) returns (LoginReply) {
+		option (google.api.http) = {
+			post: "/admin/v1/login",
+			body: "*"
+		};
+	}
+
+	rpc Logout(LogoutReq) returns (LogoutReply) {
+		option (google.api.http) = {
+			post: "/admin/v1/logout",
+			body: "*"
+		};
+	}
+
+	rpc GetUser(GetUserReq) returns (GetUserReply) {
+		option (google.api.http) = {
+			get: "/admin/v1/users/{id}"
+		};
+	}
+
+	rpc ListUser (ListUserReq) returns (ListUserReply) {
+		option (google.api.http) = {
+			get: "/v1/users",
+		};
+	}
+}
+
+message LoginReq {
+	string username = 1 [(validate.rules).string.min_len = 4];
+	string password = 2 [(validate.rules).string.min_len = 5];
+}
+
+message LoginReply {
+	string Token = 1;
+}
+
+message LogoutReq {
+
+}
+
+message LogoutReply {
+
+}
+
+message GetUserReq {
+	int64 id = 1;
+}
+
+message GetUserReply {
+	int64 id = 1;
+	string username = 2 [(validate.rules).string.min_len = 4];
+}
+
+message ListUserReq {
+	int32 pageIndex = 1;
+	int32 pageSize = 2;
+}
+
+message ListUserReply {
+	message User {
+		int64 id = 1;
+		string username = 2;
+	}
+	repeated User results = 1;
+	int64 total = 2;
+}

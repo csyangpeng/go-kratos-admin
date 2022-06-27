@@ -2,9 +2,9 @@ package server
 
 import (
 	"context"
-	v1 "github.com/csyangpeng/go-kratos-admin/api/center/interface/v1"
-	"github.com/csyangpeng/go-kratos-admin/app/center/interface/internal/conf"
-	"github.com/csyangpeng/go-kratos-admin/app/center/interface/internal/service"
+	v1 "github.com/csyangpeng/go-kratos-admin/api/center/admin/v1"
+	"github.com/csyangpeng/go-kratos-admin/app/center/admin/internal/conf"
+	"github.com/csyangpeng/go-kratos-admin/app/center/admin/internal/service"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
@@ -32,7 +32,7 @@ func NewWhiteListMatcher() selector.MatchFunc {
 }
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *conf.Server, ac *conf.Auth, s *service.CenterInterface, logger log.Logger) *http.Server {
+func NewHTTPServer(c *conf.Server, ac *conf.Auth, s *service.CenterAdmin, logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -67,6 +67,6 @@ func NewHTTPServer(c *conf.Server, ac *conf.Auth, s *service.CenterInterface, lo
 	srv := http.NewServer(opts...)
 	h := openapiv2.NewHandler()
 	srv.HandlePrefix("/q/", h)
-	v1.RegisterCenterInterfaceHTTPServer(srv, s)
+	v1.RegisterCenterAdminHTTPServer(srv, s)
 	return srv
 }

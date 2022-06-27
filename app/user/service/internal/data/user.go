@@ -118,3 +118,41 @@ func (r *userRepo) VerifyPassword(ctx context.Context, u *biz.User) (bool, error
 
 	return util.CheckPassword(u.Password, po.PasswordHash), nil
 }
+
+func (r *userRepo) ListUser(ctx context.Context, pageIndex, pageSize int) ([]*biz.User, int, error) {
+	users, err := r.paginate(pageIndex, pageSize).All(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	total, err := r.data.db.User.Query().Count(ctx)
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	rv := make([]*biz.User, 0)
+	for _, u := range users {
+		rv = append(rv, &biz.User{
+			Id:       u.ID,
+			Username: u.Username,
+			Password: u.PasswordHash,
+		})
+	}
+	return rv, total, nil
+}
+
+func (r *userRepo) paginate(page, pageSize int) *ent.UserQuery {
+	if page == 0 {
+		page = 1
+	}
+	switch {
+	case pageSize > 100:
+		pageSize = 100
+	case pageSize <= 0:
+		pageSize = 10
+	}
+
+	offset := (page - 1) * pageSize
+	return r.data.db.User.Query().Offset(offset).Limit(pageSize)
+
+}

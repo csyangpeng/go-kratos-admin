@@ -21,6 +21,10 @@ func (s *UserService) CreateUser(ctx context.Context, req *v1.CreateUserReq) (*v
 	}, nil
 }
 
+func (s *UserService) Save(ctx context.Context, req *v1.SaveUserReq) (*v1.SaveUserReply, error) {
+	return s.uc.Save(ctx, req)
+}
+
 func (s *UserService) GetUser(ctx context.Context, req *v1.GetUserReq) (*v1.GetUserReply, error) {
 	user, err := s.uc.Get(ctx, req.Id)
 	if err != nil {
@@ -46,4 +50,21 @@ func (s *UserService) VerifyPassword(ctx context.Context, req *v1.VerifyPassword
 	return &v1.VerifyPasswordReply{
 		Ok: rv,
 	}, nil
+}
+
+func (s *UserService) ListUser(ctx context.Context, req *v1.ListUserReq) (*v1.ListUserReply, error) {
+	list, total, err := s.uc.List(ctx, int(req.PageIndex), int(req.PageSize))
+	if err != nil {
+		return nil, err
+	}
+	res := &v1.ListUserReply{}
+	res.Total = int64(total)
+	for _, user := range list {
+		res.Results = append(res.Results, &v1.ListUserReply_User{
+			Id:       user.Id,
+			Username: user.Username,
+		})
+	}
+
+	return res, nil
 }

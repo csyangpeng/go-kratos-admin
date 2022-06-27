@@ -3,9 +3,64 @@
 
 openapi: 3.0.3
 info:
-    title: CenterInterface API
+    title: ""
     version: 0.0.1
 paths:
+    /admin/v1/login:
+        post:
+            tags:
+                - CenterAdmin
+            operationId: CenterAdmin_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/center.admin.v1.LoginReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/center.admin.v1.LoginReply'
+    /admin/v1/logout:
+        post:
+            tags:
+                - CenterAdmin
+            operationId: CenterAdmin_Logout
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/center.admin.v1.LogoutReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/center.admin.v1.LogoutReply'
+    /admin/v1/users/{id}:
+        get:
+            tags:
+                - CenterAdmin
+            operationId: CenterAdmin_GetUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/center.admin.v1.GetUserReply'
     /v1/login:
         post:
             tags:
@@ -60,8 +115,75 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/center.interface.v1.RegisterReply'
+    /v1/users:
+        get:
+            tags:
+                - CenterAdmin
+            operationId: CenterAdmin_ListUser
+            parameters:
+                - name: pageIndex
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/center.admin.v1.ListUserReply'
 components:
     schemas:
+        center.admin.v1.GetUserReply:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int64
+                username:
+                    type: string
+        center.admin.v1.ListUserReply:
+            type: object
+            properties:
+                results:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/center.admin.v1.ListUserReply_User'
+                total:
+                    type: integer
+                    format: int64
+        center.admin.v1.ListUserReply_User:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int64
+                username:
+                    type: string
+        center.admin.v1.LoginReply:
+            type: object
+            properties:
+                Token:
+                    type: string
+        center.admin.v1.LoginReq:
+            type: object
+            properties:
+                username:
+                    type: string
+                password:
+                    type: string
+        center.admin.v1.LogoutReply:
+            type: object
+            properties: {}
+        center.admin.v1.LogoutReq:
+            type: object
+            properties: {}
         center.interface.v1.LoginReply:
             type: object
             properties:
@@ -94,4 +216,5 @@ components:
                 password:
                     type: string
 tags:
+    - name: CenterAdmin
     - name: CenterInterface

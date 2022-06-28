@@ -34,7 +34,7 @@ func (ac *AuthUseCase) Login(ctx context.Context, req *v1.LoginReq) (*v1.LoginRe
 	// check password
 	err = ac.userRepo.VerifyPassword(ctx, user, req.Password)
 	if err != nil {
-		return nil, v1.ErrorLoginFailed("password not match")
+		return nil, err
 	}
 	// generate token
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

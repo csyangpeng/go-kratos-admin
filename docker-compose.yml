@@ -1,5 +1,23 @@
 version: '3'
 services:
+  #prometheus监控
+  prometheus:
+    image: prom/prometheus:v2.28.1
+    container_name: prometheus
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    volumes:
+      - /home/ethan/go-kratos-admin/prometheus/server/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /home/ethan/go-kratos-admin/prometheus/data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    restart: always
+    user: root
+    ports:
+      - 9090:9090
+
   #jaeger链路追踪
   jaeger:
     image: jaegertracing/all-in-one:latest
@@ -115,6 +133,21 @@ services:
       - "8000"
     volumes:
       - /home/ethan/go-kratos-admin/interface/conf:/data/conf
+    depends_on:
+      - consul
+      - jaeger
+      - mysql
+      - redis
+
+  admin:
+    container_name: gka-center-admin
+    build:
+      context: ./
+      dockerfile: Dockerfile-admin
+    expose:
+      - "8001"
+    volumes:
+      - /home/ethan/go-kratos-admin/admin/conf:/data/conf
     depends_on:
       - consul
       - jaeger

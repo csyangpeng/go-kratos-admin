@@ -43,10 +43,11 @@ func (r *userRepo) GetUser(ctx context.Context, id int64) (*biz.User, error) {
 }
 
 func (r *userRepo) FindByUsername(ctx context.Context, username string) (*biz.User, error) {
+	r.log.Info(username)
 	do, err, _ := r.sg.Do(fmt.Sprintf("find_user_by_username_%s", username), func() (interface{}, error) {
 		user, err := r.data.uc.GetUserByUsername(ctx, &userv1.GetUserByUsernameReq{Username: username})
 		if err != nil {
-			return nil, biz.ErrUserNotFound
+			return nil, err
 		}
 		return &biz.User{
 			Id:       user.Id,
@@ -62,7 +63,7 @@ func (r *userRepo) FindByUsername(ctx context.Context, username string) (*biz.Us
 func (r *userRepo) VerifyPassword(ctx context.Context, u *biz.User, password string) error {
 	rv, err := r.data.uc.VerifyPassword(ctx, &userv1.VerifyPasswordReq{
 		Username: u.Username,
-		Password: u.Password,
+		Password: password,
 	})
 	if err != nil {
 		return err

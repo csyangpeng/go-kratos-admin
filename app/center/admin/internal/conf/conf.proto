@@ -1,7 +1,7 @@
 syntax = "proto3";
 package kratos.api;
 
-option go_package = "github.com/csyangpeng/go-kratos-admin/app/center/admin/internal/conf;conf";
+option go_package = "admin/internal/conf;conf";
 
 import "google/protobuf/duration.proto";
 
@@ -47,8 +47,8 @@ message Data {
 }
 
 message Auth {
-  string serviceKey = 1;
-  string apiKey = 2;
+  string service_key = 1;
+  string api_key = 2;
 }
 
 message Registry {

@@ -31,6 +31,15 @@ api:
 	       --openapi_out=fq_schema_naming=true,default_response=false:. \
 	       $(API_PROTO_FILES)
 
+.PHONY: swagger
+swagger:
+	protoc --proto_path=../../../api/center/admin/v1 \
+            --proto_path=../../../third_party \
+            --openapiv2_out ../../../api/center/admin/v1 \
+            --openapiv2_opt logtostderr=true \
+            --openapiv2_opt json_names_for_fields=false \
+            ../../../api/center/admin/v1/center_admin.proto
+
 .PHONY: build
 # build
 build:

@@ -1,5 +1,23 @@
 version: '3'
 services:
+  #prometheus监控
+  prometheus:
+    image: prom/prometheus:v2.28.1
+    container_name: prometheus
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    volumes:
+      - /home/ethan/go-kratos-admin/prometheus/server/prometheus-dev.yml:/etc/prometheus/prometheus.yml
+      - /home/ethan/go-kratos-admin/prometheus/data-dev:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    restart: always
+    user: root
+    ports:
+      - 9090:9090
+
   #jaeger链路追踪
   jaeger:
     image: jaegertracing/all-in-one:latest

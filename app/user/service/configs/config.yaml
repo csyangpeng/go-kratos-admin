@@ -12,7 +12,8 @@ data:
     driver: mysql
     source: root:qwe123@tcp(192.168.1.11:3306)/gka_user?charset=utf8mb4&parseTime=true
   redis:
-    addr: 192.168.1.11:6379
+    addr: 192.168.1.11:63791
+    password: G62m50oigInC30sf
     read_timeout: 0.2s
     write_timeout: 0.2s
 auth:

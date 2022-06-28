@@ -1,0 +1,122 @@
+version: '3'
+services:
+  #jaeger链路追踪
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    restart: always
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "9411:9411"
+    environment:
+      - LOG_LEVEL=debug
+
+  consul:
+    image: consul
+    container_name: consul
+    restart: always
+    privileged: true
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - "8500:8500"
+      - "8300:8300"
+      - "8301:8301"
+      - "8302:8302"
+      - "8600:8600/udp"
+    command: "agent -dev -client=0.0.0.0"
+
+  #前端网关nginx-gateay (只代理looklook，admin-api不在这里做代理)
+  nginx-gateway:
+    image: nginx:latest
+    container_name: nginx-gateway
+    restart: always
+    privileged: true
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - "8888:8081"
+    volumes:
+      - /home/ethan/go-kratos-admin/nginx/conf.d:/etc/nginx/conf.d
+      - /home/ethan/go-kratos-admin/nginx/log:/var/log/nginx
+    depends_on:
+      - consul
+      - jaeger
+      - user
+      - interface
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+      # root 密码
+      MYSQL_ROOT_PASSWORD: qwe123
+    ports:
+      - "3306:3306"
+    volumes:
+      # 数据挂载
+      - ./home/ethan/go-kratos-admin/mysql/data:/var/lib/mysql
+      # 日志
+    command:
+      # 将mysql8.0默认密码策略 修改为 原先 策略 (mysql8.0对其默认策略做了更改 会导致密码无法匹配)
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+    privileged: true
+    restart: always
+
+  #redis容器
+  redis:
+    image: redis:6.2.5
+    container_name: redis
+    ports:
+      - "63791:6379"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    volumes:
+      # 数据文件
+      - /home/ethan/go-kratos-admin/redis/data:/data:rw
+    command: "redis-server --requirepass G62m50oigInC30sf  --appendonly yes"
+#    command: "redis-server --appendonly yes"
+    privileged: true
+    restart: always
+
+  user:
+    container_name: gka-user-service
+    build:
+      context: ./
+      dockerfile: Dockerfile-user
+    expose:
+      - "51051"
+    volumes:
+      - /home/ethan/go-kratos-admin/server/conf:/data/conf
+    depends_on:
+      - consul
+      - jaeger
+      - mysql
+      - redis
+
+  interface:
+    container_name: gka-center-interface
+    build:
+      context: ./
+      dockerfile: Dockerfile-interface
+    expose:
+      - "8000"
+    volumes:
+      - /home/ethan/go-kratos-admin/interface/conf:/data/conf
+    depends_on:
+      - consul
+      - jaeger
+      - mysql
+      - redis

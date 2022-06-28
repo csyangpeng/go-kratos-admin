@@ -1,9 +1,9 @@
 FROM golang:1.18.3 AS builder
 
 COPY . /src
-WORKDIR /src/app/${APP_RELATIVE_PATH}
+WORKDIR /src
 
-RUN GOPROXY=https://goproxy.cn,direct make build
+RUN GOPROXY=https://goproxy.cn make build
 
 FROM debian:stable-slim
 
@@ -15,10 +15,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY --from=builder /src/bin /app
 
-WORKDIR /src/app/user/service
+WORKDIR /app
 
-EXPOSE 8000
-EXPOSE 9000
+EXPOSE 51051
 VOLUME /data/conf
 
-CMD ["./server", "-conf", "/data/conf"]
+CMD ["./interface", "-conf", "/data/conf"]

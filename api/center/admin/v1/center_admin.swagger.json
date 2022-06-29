@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "api/center/admin/v1/center_admin.proto",
+    "title": "v1/center_admin.proto",
     "version": "version not set"
   },
   "tags": [
@@ -166,7 +166,7 @@
     "protobufAny": {
       "type": "object",
       "properties": {
-        "type_url": {
+        "typeUrl": {
           "type": "string"
         },
         "value": {

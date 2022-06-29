@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.19.4
-// source: center/interface/v1/center_interface.proto
+// source: v1/center_interface.proto
 
 package v1
 
@@ -173,5 +173,5 @@ var CenterInterface_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "center/interface/v1/center_interface.proto",
+	Metadata: "v1/center_interface.proto",
 }

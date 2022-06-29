@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "api/user/service/v1/user.proto",
+    "title": "v1/user.proto",
     "version": "version not set"
   },
   "tags": [
@@ -32,7 +32,7 @@
     "protobufAny": {
       "type": "object",
       "properties": {
-        "type_url": {
+        "typeUrl": {
           "type": "string"
         },
         "value": {
@@ -103,6 +103,10 @@
           "items": {
             "$ref": "#/definitions/ListUserReplyUser"
           }
+        },
+        "total": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },

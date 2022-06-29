@@ -31,13 +31,13 @@ type CenterAdminHTTPServer interface {
 
 func RegisterCenterAdminHTTPServer(s *http.Server, srv CenterAdminHTTPServer) {
 	r := s.Route("/")
-	r.POST("/admin/v1/login", _CenterAdmin_Login1_HTTP_Handler(srv))
-	r.POST("/admin/v1/logout", _CenterAdmin_Logout1_HTTP_Handler(srv))
+	r.POST("/admin/v1/login", _CenterAdmin_Login0_HTTP_Handler(srv))
+	r.POST("/admin/v1/logout", _CenterAdmin_Logout0_HTTP_Handler(srv))
 	r.GET("/admin/v1/users/{id}", _CenterAdmin_GetUser0_HTTP_Handler(srv))
 	r.GET("/v1/users", _CenterAdmin_ListUser0_HTTP_Handler(srv))
 }
 
-func _CenterAdmin_Login1_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.Context) error {
+func _CenterAdmin_Login0_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in LoginReq
 		if err := ctx.Bind(&in); err != nil {
@@ -56,7 +56,7 @@ func _CenterAdmin_Login1_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.C
 	}
 }
 
-func _CenterAdmin_Logout1_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.Context) error {
+func _CenterAdmin_Logout0_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in LogoutReq
 		if err := ctx.Bind(&in); err != nil {

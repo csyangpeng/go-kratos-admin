@@ -113,7 +113,7 @@ services:
     container_name: gka-user-service
     build:
       context: ./
-      dockerfile: Dockerfile-user
+      dockerfile: ./app/user/service/Dockerfile
     expose:
       - "51051"
     volumes:
@@ -128,7 +128,7 @@ services:
     container_name: gka-center-interface
     build:
       context: ./
-      dockerfile: Dockerfile-interface
+      dockerfile: ./app/center/interface/Dockerfile
     expose:
       - "8000"
     volumes:
@@ -138,12 +138,13 @@ services:
       - jaeger
       - mysql
       - redis
+      - user
 
   admin:
     container_name: gka-center-admin
     build:
       context: ./
-      dockerfile: Dockerfile-admin
+      dockerfile: ./app/center/admin/Dockerfile
     expose:
       - "8001"
     volumes:
@@ -153,3 +154,4 @@ services:
       - jaeger
       - mysql
       - redis
+      - user

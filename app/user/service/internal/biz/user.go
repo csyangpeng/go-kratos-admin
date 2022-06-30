@@ -5,6 +5,7 @@ import (
 	"errors"
 	v1 "github.com/csyangpeng/go-kratos-admin/api/user/service/v1"
 	"github.com/go-kratos/kratos/v2/log"
+	"math/rand"
 )
 
 var (
@@ -52,15 +53,16 @@ func (uc *UserUseCase) Create(ctx context.Context, u *User) (*User, error) {
 
 func (uc *UserUseCase) Save(ctx context.Context, req *v1.SaveUserReq) (*v1.SaveUserReply, error) {
 	user := &User{
+		Id:       rand.Int63(),
 		Username: req.Username,
 		Password: req.Password,
 	}
-	_, err := uc.Create(ctx, user)
+	res, err := uc.Create(ctx, user)
 	if err != nil {
 		return nil, err
 	}
 
-	return &v1.SaveUserReply{Id: user.Id}, nil
+	return &v1.SaveUserReply{Id: res.Id}, nil
 }
 
 func (uc *UserUseCase) VerifyPassword(ctx context.Context, u *User) (bool, error) {

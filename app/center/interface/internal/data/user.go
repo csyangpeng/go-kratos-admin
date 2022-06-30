@@ -55,3 +55,14 @@ func (r *userRepo) VerifyPassword(ctx context.Context, u *biz.User, password str
 
 	return nil
 }
+
+func (r *userRepo) Save(ctx context.Context, u *biz.User) error {
+	res, err := r.data.uc.Save(ctx, &userv1.SaveUserReq{
+		Id:       u.Id,
+		Username: u.Username,
+		Password: u.Password,
+	})
+
+	u.Id = res.Id
+	return err
+}

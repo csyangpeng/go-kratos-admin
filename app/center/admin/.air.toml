@@ -8,7 +8,7 @@ tmp_dir = "tmp"
 [build]
 # 由`cmd`命令得到的二进制文件名
 # Windows平台示例：bin = "./tmp/main.exe"
-bin = "./bin/admin -conf './configs'"
+bin = "./bin/server -conf './configs'"
 # 只需要写你平常编译使用的shell命令。你也可以使用 `make`
 # Windows平台示例: cmd = "go build -o ./tmp/main.exe ."
 cmd = "make build"

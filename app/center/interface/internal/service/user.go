@@ -6,8 +6,8 @@ import (
 )
 
 func (c *CenterInterface) Register(ctx context.Context, req *v1.RegisterReq) (*v1.RegisterReply, error) {
-	//TODO implement me
-	panic("implement me")
+	c.log.Infof("%v", req)
+	return c.ac.Register(ctx, req)
 }
 
 func (c *CenterInterface) Login(ctx context.Context, req *v1.LoginReq) (*v1.LoginReply, error) {

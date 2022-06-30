@@ -16,7 +16,7 @@ services:
     restart: always
     user: root
     ports:
-      - 9090:9090
+      - "9090:9090"
 
   #jaeger链路追踪
   jaeger:
@@ -61,7 +61,7 @@ services:
       - "3306:3306"
     volumes:
       # 数据挂载
-      - ./home/ethan/go-kratos-admin/mysql/data:/var/lib/mysql
+      - /home/ethan/go-kratos-admin/mysql/data:/var/lib/mysql
       # 日志
     command:
       # 将mysql8.0默认密码策略 修改为 原先 策略 (mysql8.0对其默认策略做了更改 会导致密码无法匹配)

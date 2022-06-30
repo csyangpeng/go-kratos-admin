@@ -72,6 +72,7 @@ message GetUserReq {
 message GetUserReply {
 	int64 id = 1;
 	string username = 2 [(validate.rules).string.min_len = 4];
+	bool isActive = 3;
 }
 
 message ListUserReq {

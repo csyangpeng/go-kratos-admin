@@ -17,6 +17,7 @@ type User struct {
 	Id       int64
 	Username string
 	Password string
+	IsActive bool
 }
 
 func NewUser(username, password string) (User, error) {

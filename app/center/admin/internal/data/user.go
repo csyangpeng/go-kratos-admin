@@ -35,6 +35,7 @@ func (r *userRepo) GetUser(ctx context.Context, id int64) (*biz.User, error) {
 		return &biz.User{
 			Id:       u.Id,
 			Username: u.Username,
+			IsActive: u.IsActive,
 		}, nil
 	})
 	if err != nil {
@@ -54,6 +55,7 @@ func (r *userRepo) FindByUsername(ctx context.Context, username string) (*biz.Us
 		return &biz.User{
 			Id:       user.Id,
 			Username: user.Username,
+			IsActive: user.IsActive,
 		}, nil
 	})
 	if err != nil {

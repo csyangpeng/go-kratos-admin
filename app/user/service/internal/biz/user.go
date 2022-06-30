@@ -17,6 +17,7 @@ type User struct {
 	Id       int64
 	Username string
 	Password string
+	IsActive bool
 }
 
 type UserRepo interface {
@@ -81,6 +82,7 @@ func (uc *UserUseCase) GetUserByUsername(ctx context.Context, req *v1.GetUserByU
 	return &v1.GetUserByUsernameReply{
 		Id:       user.Id,
 		Username: user.Username,
+		IsActive: user.IsActive,
 	}, nil
 }
 

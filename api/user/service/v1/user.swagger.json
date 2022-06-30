@@ -92,6 +92,9 @@
         },
         "username": {
           "type": "string"
+        },
+        "isActive": {
+          "type": "boolean"
         }
       }
     },
@@ -104,6 +107,9 @@
         },
         "username": {
           "type": "string"
+        },
+        "isActive": {
+          "type": "boolean"
         }
       }
     },

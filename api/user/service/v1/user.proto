@@ -39,6 +39,7 @@ message GetUserReq {
 message GetUserReply {
 	int64 id = 1;
 	string username = 2;
+	bool isActive = 3;
 }
 
 message ListUserReq {
@@ -71,6 +72,7 @@ message GetUserByUsernameReq {
 message GetUserByUsernameReply {
 	int64 id = 1;
 	string username = 2;
+	bool isActive = 3;
 }
 
 message ChangeActiveReq {

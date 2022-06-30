@@ -32,6 +32,7 @@ func (r *userRepo) FindByUsername(ctx context.Context, username string) (*biz.Us
 		return &biz.User{
 			Id:       user.Id,
 			Username: user.Username,
+			IsActive: user.IsActive,
 		}, nil
 	})
 	if err != nil {

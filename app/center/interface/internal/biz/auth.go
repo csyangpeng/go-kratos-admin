@@ -31,6 +31,12 @@ func (ac *AuthUseCase) Login(ctx context.Context, req *v1.LoginReq) (*v1.LoginRe
 	if err != nil {
 		return nil, v1.ErrorLoginFailed("user not found: %s", err.Error())
 	}
+
+	// check isActive
+	if !user.IsActive {
+		return nil, v1.ErrorLoginFailed("user is deactivated")
+	}
+
 	// check password
 	err = ac.userRepo.VerifyPassword(ctx, user, req.Password)
 	if err != nil {

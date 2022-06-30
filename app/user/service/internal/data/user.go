@@ -45,6 +45,7 @@ func (r *userRepo) GetUser(ctx context.Context, id int64) (*biz.User, error) {
 	return &biz.User{
 		Id:       target.ID,
 		Username: target.Username,
+		IsActive: target.IsActive,
 	}, nil
 }
 
@@ -66,6 +67,7 @@ func (r *userRepo) FindByUsername(ctx context.Context, username string) (*biz.Us
 	return &biz.User{
 		Id:       target.ID,
 		Username: target.Username,
+		IsActive: target.IsActive,
 	}, nil
 }
 
@@ -150,7 +152,7 @@ func (r *userRepo) ListUser(ctx context.Context, pageIndex, pageSize int) ([]*bi
 
 // ChangeActive implements biz.UserRepo
 func (r *userRepo) ChangeActive(ctx context.Context, u *biz.User, isActive bool) (bool, error) {
-	user, err := r.data.db.User.
+	uv, err := r.data.db.User.
 		UpdateOneID(u.Id).
 		SetIsActive(isActive).
 		Save(ctx)
@@ -159,7 +161,7 @@ func (r *userRepo) ChangeActive(ctx context.Context, u *biz.User, isActive bool)
 	}
 
 	// reset cache
-	r.resetUserCache(ctx, user)
+	r.resetUserCache(ctx, uv)
 
 	return true, nil
 }

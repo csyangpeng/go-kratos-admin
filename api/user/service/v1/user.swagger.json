@@ -59,6 +59,18 @@
         }
       }
     },
+    "v1ChangeActiveReply": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
     "v1CreateUserReply": {
       "type": "object",
       "properties": {

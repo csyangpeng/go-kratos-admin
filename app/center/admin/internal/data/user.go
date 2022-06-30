@@ -96,3 +96,13 @@ func (r *userRepo) ListUser(ctx context.Context, req *v1.ListUserReq) (*v1.ListU
 
 	return v, nil
 }
+
+// ChangeActive implements biz.UserRepo
+func (r *userRepo) ChangeActive(ctx context.Context, id int64, active bool) (bool, error) {
+	res, err := r.data.uc.ChangeActive(ctx, &userv1.ChangeActiveReq{Id: id, IsActive: active})
+	if err != nil {
+		return false, err
+	}
+
+	return res.Ok, nil
+}

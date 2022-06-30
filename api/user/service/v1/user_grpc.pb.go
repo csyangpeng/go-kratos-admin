@@ -28,6 +28,7 @@ type UserClient interface {
 	GetUserByUsername(ctx context.Context, in *GetUserByUsernameReq, opts ...grpc.CallOption) (*GetUserByUsernameReply, error)
 	ListUser(ctx context.Context, in *ListUserReq, opts ...grpc.CallOption) (*ListUserReply, error)
 	VerifyPassword(ctx context.Context, in *VerifyPasswordReq, opts ...grpc.CallOption) (*VerifyPasswordReply, error)
+	ChangeActive(ctx context.Context, in *ChangeActiveReq, opts ...grpc.CallOption) (*ChangeActiveReply, error)
 }
 
 type userClient struct {
@@ -92,6 +93,15 @@ func (c *userClient) VerifyPassword(ctx context.Context, in *VerifyPasswordReq, 
 	return out, nil
 }
 
+func (c *userClient) ChangeActive(ctx context.Context, in *ChangeActiveReq, opts ...grpc.CallOption) (*ChangeActiveReply, error) {
+	out := new(ChangeActiveReply)
+	err := c.cc.Invoke(ctx, "/user.service.v1.User/ChangeActive", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -102,6 +112,7 @@ type UserServer interface {
 	GetUserByUsername(context.Context, *GetUserByUsernameReq) (*GetUserByUsernameReply, error)
 	ListUser(context.Context, *ListUserReq) (*ListUserReply, error)
 	VerifyPassword(context.Context, *VerifyPasswordReq) (*VerifyPasswordReply, error)
+	ChangeActive(context.Context, *ChangeActiveReq) (*ChangeActiveReply, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -126,6 +137,9 @@ func (UnimplementedUserServer) ListUser(context.Context, *ListUserReq) (*ListUse
 }
 func (UnimplementedUserServer) VerifyPassword(context.Context, *VerifyPasswordReq) (*VerifyPasswordReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyPassword not implemented")
+}
+func (UnimplementedUserServer) ChangeActive(context.Context, *ChangeActiveReq) (*ChangeActiveReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeActive not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -248,6 +262,24 @@ func _User_VerifyPassword_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_ChangeActive_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeActiveReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).ChangeActive(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.service.v1.User/ChangeActive",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).ChangeActive(ctx, req.(*ChangeActiveReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -278,6 +310,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyPassword",
 			Handler:    _User_VerifyPassword_Handler,
+		},
+		{
+			MethodName: "ChangeActive",
+			Handler:    _User_ChangeActive_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

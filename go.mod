@@ -30,6 +30,7 @@ require (
 
 require (
 	github.com/envoyproxy/protoc-gen-validate v0.6.2
+	github.com/go-kratos/kratos/contrib/metrics/prometheus/v2 v2.0.0-20220628035128-13c33fc4d343
 	github.com/prometheus/client_golang v1.12.2
 	go.opentelemetry.io/otel v1.7.0
 	go.opentelemetry.io/otel/exporters/jaeger v1.7.0
@@ -50,7 +51,6 @@ require (
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-kratos/grpc-gateway/v2 v2.5.1-0.20210811062259-c92d36e434b1 // indirect
-	github.com/go-kratos/kratos/contrib/metrics/prometheus/v2 v2.0.0-20220628035128-13c33fc4d343 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect

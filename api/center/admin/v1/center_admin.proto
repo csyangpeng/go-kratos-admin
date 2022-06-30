@@ -32,6 +32,20 @@ service CenterAdmin {
 			get: "/admin/v1/users",
 		};
 	}
+
+	rpc DeactivateUser (UserIdReq) returns (UserOkReply) {
+		option (google.api.http) = {
+			put: "/admin/v1/users/{id}/deactivate",
+			body: "*"
+		};
+	}
+
+	rpc ActivateUser (UserIdReq) returns (UserOkReply) {
+		option (google.api.http) = {
+			put: "/admin/v1/users/{id}/activate",
+			body: "*"
+		};
+	}
 }
 
 message LoginReq {
@@ -40,7 +54,7 @@ message LoginReq {
 }
 
 message LoginReply {
-	string Token = 1;
+	string token = 1;
 }
 
 message LogoutReq {
@@ -72,4 +86,12 @@ message ListUserReply {
 	}
 	repeated User results = 1;
 	int64 total = 2;
+}
+
+message UserIdReq {
+	int64 id = 1;
+}
+
+message UserOkReply {
+	bool ok = 1;
 }

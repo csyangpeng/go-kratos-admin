@@ -26,6 +26,8 @@ type CenterAdminClient interface {
 	Logout(ctx context.Context, in *LogoutReq, opts ...grpc.CallOption) (*LogoutReply, error)
 	GetUser(ctx context.Context, in *GetUserReq, opts ...grpc.CallOption) (*GetUserReply, error)
 	ListUser(ctx context.Context, in *ListUserReq, opts ...grpc.CallOption) (*ListUserReply, error)
+	DeactivateUser(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UserOkReply, error)
+	ActivateUser(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UserOkReply, error)
 }
 
 type centerAdminClient struct {
@@ -72,6 +74,24 @@ func (c *centerAdminClient) ListUser(ctx context.Context, in *ListUserReq, opts 
 	return out, nil
 }
 
+func (c *centerAdminClient) DeactivateUser(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UserOkReply, error) {
+	out := new(UserOkReply)
+	err := c.cc.Invoke(ctx, "/center.admin.v1.CenterAdmin/DeactivateUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *centerAdminClient) ActivateUser(ctx context.Context, in *UserIdReq, opts ...grpc.CallOption) (*UserOkReply, error) {
+	out := new(UserOkReply)
+	err := c.cc.Invoke(ctx, "/center.admin.v1.CenterAdmin/ActivateUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CenterAdminServer is the server API for CenterAdmin service.
 // All implementations must embed UnimplementedCenterAdminServer
 // for forward compatibility
@@ -80,6 +100,8 @@ type CenterAdminServer interface {
 	Logout(context.Context, *LogoutReq) (*LogoutReply, error)
 	GetUser(context.Context, *GetUserReq) (*GetUserReply, error)
 	ListUser(context.Context, *ListUserReq) (*ListUserReply, error)
+	DeactivateUser(context.Context, *UserIdReq) (*UserOkReply, error)
+	ActivateUser(context.Context, *UserIdReq) (*UserOkReply, error)
 	mustEmbedUnimplementedCenterAdminServer()
 }
 
@@ -98,6 +120,12 @@ func (UnimplementedCenterAdminServer) GetUser(context.Context, *GetUserReq) (*Ge
 }
 func (UnimplementedCenterAdminServer) ListUser(context.Context, *ListUserReq) (*ListUserReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUser not implemented")
+}
+func (UnimplementedCenterAdminServer) DeactivateUser(context.Context, *UserIdReq) (*UserOkReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeactivateUser not implemented")
+}
+func (UnimplementedCenterAdminServer) ActivateUser(context.Context, *UserIdReq) (*UserOkReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ActivateUser not implemented")
 }
 func (UnimplementedCenterAdminServer) mustEmbedUnimplementedCenterAdminServer() {}
 
@@ -184,6 +212,42 @@ func _CenterAdmin_ListUser_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CenterAdmin_DeactivateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserIdReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CenterAdminServer).DeactivateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/center.admin.v1.CenterAdmin/DeactivateUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CenterAdminServer).DeactivateUser(ctx, req.(*UserIdReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CenterAdmin_ActivateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserIdReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CenterAdminServer).ActivateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/center.admin.v1.CenterAdmin/ActivateUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CenterAdminServer).ActivateUser(ctx, req.(*UserIdReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CenterAdmin_ServiceDesc is the grpc.ServiceDesc for CenterAdmin service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +270,14 @@ var CenterAdmin_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListUser",
 			Handler:    _CenterAdmin_ListUser_Handler,
+		},
+		{
+			MethodName: "DeactivateUser",
+			Handler:    _CenterAdmin_DeactivateUser_Handler,
+		},
+		{
+			MethodName: "ActivateUser",
+			Handler:    _CenterAdmin_ActivateUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

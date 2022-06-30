@@ -148,6 +148,84 @@
           "CenterAdmin"
         ]
       }
+    },
+    "/admin/v1/users/{id}/activate": {
+      "put": {
+        "operationId": "CenterAdmin_ActivateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UserOkReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "tags": [
+          "CenterAdmin"
+        ]
+      }
+    },
+    "/admin/v1/users/{id}/deactivate": {
+      "put": {
+        "operationId": "CenterAdmin_DeactivateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UserOkReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "tags": [
+          "CenterAdmin"
+        ]
+      }
     }
   },
   "definitions": {
@@ -223,7 +301,7 @@
     "v1LoginReply": {
       "type": "object",
       "properties": {
-        "Token": {
+        "token": {
           "type": "string"
         }
       }
@@ -244,6 +322,14 @@
     },
     "v1LogoutReq": {
       "type": "object"
+    },
+    "v1UserOkReply": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        }
+      }
     }
   }
 }

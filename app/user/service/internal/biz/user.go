@@ -25,6 +25,7 @@ type UserRepo interface {
 	CreateUser(ctx context.Context, u *User) (*User, error)
 	VerifyPassword(ctx context.Context, u *User) (bool, error)
 	ListUser(ctx context.Context, pageIndex, pageSize int) ([]*User, int, error)
+	ChangeActive(ctx context.Context, u *User, isActive bool) (bool, error)
 }
 
 type UserUseCase struct {
@@ -85,4 +86,21 @@ func (uc *UserUseCase) GetUserByUsername(ctx context.Context, req *v1.GetUserByU
 
 func (uc *UserUseCase) List(ctx context.Context, pageIndex, pageSize int) ([]*User, int, error) {
 	return uc.repo.ListUser(ctx, pageIndex, pageSize)
+}
+
+func (uc *UserUseCase) ChangeActive(ctx context.Context, req *v1.ChangeActiveReq) (*v1.ChangeActiveReply, error) {
+	u, err := uc.repo.GetUser(ctx, req.Id)
+	if err != nil || u == nil {
+		return nil, ErrUserNotFound
+	}
+
+	ok, err := uc.repo.ChangeActive(ctx, &User{Id: u.Id, Username: u.Username}, req.IsActive)
+	if err != nil {
+		return nil, err
+	}
+
+	return &v1.ChangeActiveReply{
+		Ok: ok,
+		Id: req.Id,
+	}, nil
 }

@@ -3,6 +3,7 @@ package biz
 import (
 	"context"
 	"errors"
+
 	v1 "github.com/csyangpeng/go-kratos-admin/api/center/admin/v1"
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -22,6 +23,7 @@ type UserRepo interface {
 	FindByUsername(ctx context.Context, username string) (*User, error)
 	VerifyPassword(ctx context.Context, u *User, password string) error
 	ListUser(ctx context.Context, req *v1.ListUserReq) (*v1.ListUserReply, error)
+	ChangeActive(ctx context.Context, id int64, active bool) (bool, error)
 }
 
 type UserUseCase struct {
@@ -50,4 +52,13 @@ func (uc *UserUseCase) Get(ctx context.Context, req *v1.GetUserReq) (*v1.GetUser
 
 func (uc *UserUseCase) List(ctx context.Context, req *v1.ListUserReq) (*v1.ListUserReply, error) {
 	return uc.repo.ListUser(ctx, req)
+}
+
+func (uc *UserUseCase) ChangeActive(ctx context.Context, id int64, active bool) (bool, error) {
+	_, err := uc.repo.GetUser(ctx, id)
+	if err != nil {
+		return false, err
+	}
+
+	return uc.repo.ChangeActive(ctx, id, active)
 }

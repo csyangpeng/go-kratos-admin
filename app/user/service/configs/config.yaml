@@ -6,7 +6,7 @@ server:
     timeout: 1s
   grpc:
     addr: 0.0.0.0:51051
-    timeout: 1s
+    timeout: 5s
 data:
   database:
     driver: mysql

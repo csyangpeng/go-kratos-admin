@@ -4,12 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
+
 	"github.com/csyangpeng/go-kratos-admin/app/user/service/internal/biz"
 	"github.com/csyangpeng/go-kratos-admin/app/user/service/internal/data/ent"
 	"github.com/csyangpeng/go-kratos-admin/app/user/service/internal/data/ent/user"
 	"github.com/csyangpeng/go-kratos-admin/app/user/service/internal/pkg/util"
 	"github.com/go-kratos/kratos/v2/log"
-	"time"
 )
 
 var _ biz.UserRepo = (*userRepo)(nil)
@@ -33,11 +34,12 @@ func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 func (r *userRepo) GetUser(ctx context.Context, id int64) (*biz.User, error) {
 	cacheKey := cacheKey(fmt.Sprintf("%d", id))
 	target, err := r.getUserFromCache(ctx, cacheKey)
-	if err != nil {
+	if err != nil || target == nil {
 		target, err = r.data.db.User.Get(ctx, id)
-		if err != nil {
+		if err != nil || target == nil {
 			return nil, biz.ErrUserNotFound
 		}
+
 		r.setUserCache(ctx, target, cacheKey)
 	}
 	return &biz.User{

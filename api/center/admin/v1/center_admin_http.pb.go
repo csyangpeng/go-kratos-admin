@@ -34,7 +34,7 @@ func RegisterCenterAdminHTTPServer(s *http.Server, srv CenterAdminHTTPServer) {
 	r.POST("/admin/v1/login", _CenterAdmin_Login0_HTTP_Handler(srv))
 	r.POST("/admin/v1/logout", _CenterAdmin_Logout0_HTTP_Handler(srv))
 	r.GET("/admin/v1/users/{id}", _CenterAdmin_GetUser0_HTTP_Handler(srv))
-	r.GET("/v1/users", _CenterAdmin_ListUser0_HTTP_Handler(srv))
+	r.GET("/admin/v1/users", _CenterAdmin_ListUser0_HTTP_Handler(srv))
 }
 
 func _CenterAdmin_Login0_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.Context) error {
@@ -146,7 +146,7 @@ func (c *CenterAdminHTTPClientImpl) GetUser(ctx context.Context, in *GetUserReq,
 
 func (c *CenterAdminHTTPClientImpl) ListUser(ctx context.Context, in *ListUserReq, opts ...http.CallOption) (*ListUserReply, error) {
 	var out ListUserReply
-	pattern := "/v1/users"
+	pattern := "/admin/v1/users"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationCenterAdminListUser))
 	opts = append(opts, http.PathTemplate(pattern))

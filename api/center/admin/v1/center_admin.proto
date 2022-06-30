@@ -29,7 +29,7 @@ service CenterAdmin {
 
 	rpc ListUser (ListUserReq) returns (ListUserReply) {
 		option (google.api.http) = {
-			get: "/v1/users",
+			get: "/admin/v1/users",
 		};
 	}
 }

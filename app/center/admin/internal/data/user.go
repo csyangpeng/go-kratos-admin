@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"fmt"
+
 	v1 "github.com/csyangpeng/go-kratos-admin/api/center/admin/v1"
 	userv1 "github.com/csyangpeng/go-kratos-admin/api/user/service/v1"
 	"github.com/csyangpeng/go-kratos-admin/app/center/admin/internal/biz"
@@ -27,7 +28,8 @@ func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 func (r *userRepo) GetUser(ctx context.Context, id int64) (*biz.User, error) {
 	do, err, _ := r.sg.Do(fmt.Sprintf("get_user_id_%d", id), func() (interface{}, error) {
 		u, err := r.data.uc.GetUser(ctx, &userv1.GetUserReq{Id: id})
-		if err == nil {
+
+		if err != nil {
 			return nil, biz.ErrUserNotFound
 		}
 		return &biz.User{

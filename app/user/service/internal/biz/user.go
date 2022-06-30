@@ -3,9 +3,10 @@ package biz
 import (
 	"context"
 	"errors"
+	"math/rand"
+
 	v1 "github.com/csyangpeng/go-kratos-admin/api/user/service/v1"
 	"github.com/go-kratos/kratos/v2/log"
-	"math/rand"
 )
 
 var (
@@ -44,6 +45,7 @@ func (uc *UserUseCase) Get(ctx context.Context, id int64) (*User, error) {
 
 func (uc *UserUseCase) Create(ctx context.Context, u *User) (*User, error) {
 	out, err := uc.repo.CreateUser(ctx, u)
+	uc.repo.CreateUser(ctx, u)
 	if err != nil {
 		return nil, err
 	}

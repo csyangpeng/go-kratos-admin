@@ -17,12 +17,16 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationCenterAdminActivateUser = "/center.admin.v1.CenterAdmin/ActivateUser"
+const OperationCenterAdminDeactivateUser = "/center.admin.v1.CenterAdmin/DeactivateUser"
 const OperationCenterAdminGetUser = "/center.admin.v1.CenterAdmin/GetUser"
 const OperationCenterAdminListUser = "/center.admin.v1.CenterAdmin/ListUser"
 const OperationCenterAdminLogin = "/center.admin.v1.CenterAdmin/Login"
 const OperationCenterAdminLogout = "/center.admin.v1.CenterAdmin/Logout"
 
 type CenterAdminHTTPServer interface {
+	ActivateUser(context.Context, *UserIdReq) (*UserOkReply, error)
+	DeactivateUser(context.Context, *UserIdReq) (*UserOkReply, error)
 	GetUser(context.Context, *GetUserReq) (*GetUserReply, error)
 	ListUser(context.Context, *ListUserReq) (*ListUserReply, error)
 	Login(context.Context, *LoginReq) (*LoginReply, error)
@@ -31,13 +35,15 @@ type CenterAdminHTTPServer interface {
 
 func RegisterCenterAdminHTTPServer(s *http.Server, srv CenterAdminHTTPServer) {
 	r := s.Route("/")
-	r.POST("/admin/v1/login", _CenterAdmin_Login1_HTTP_Handler(srv))
-	r.POST("/admin/v1/logout", _CenterAdmin_Logout1_HTTP_Handler(srv))
+	r.POST("/admin/v1/login", _CenterAdmin_Login0_HTTP_Handler(srv))
+	r.POST("/admin/v1/logout", _CenterAdmin_Logout0_HTTP_Handler(srv))
 	r.GET("/admin/v1/users/{id}", _CenterAdmin_GetUser0_HTTP_Handler(srv))
-	r.GET("/v1/users", _CenterAdmin_ListUser0_HTTP_Handler(srv))
+	r.GET("/admin/v1/users", _CenterAdmin_ListUser0_HTTP_Handler(srv))
+	r.PUT("/admin/v1/users/{id}/deactivate", _CenterAdmin_DeactivateUser0_HTTP_Handler(srv))
+	r.PUT("/admin/v1/users/{id}/activate", _CenterAdmin_ActivateUser0_HTTP_Handler(srv))
 }
 
-func _CenterAdmin_Login1_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.Context) error {
+func _CenterAdmin_Login0_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in LoginReq
 		if err := ctx.Bind(&in); err != nil {
@@ -56,7 +62,7 @@ func _CenterAdmin_Login1_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.C
 	}
 }
 
-func _CenterAdmin_Logout1_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.Context) error {
+func _CenterAdmin_Logout0_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in LogoutReq
 		if err := ctx.Bind(&in); err != nil {
@@ -116,7 +122,53 @@ func _CenterAdmin_ListUser0_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx htt
 	}
 }
 
+func _CenterAdmin_DeactivateUser0_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UserIdReq
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationCenterAdminDeactivateUser)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.DeactivateUser(ctx, req.(*UserIdReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UserOkReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _CenterAdmin_ActivateUser0_HTTP_Handler(srv CenterAdminHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UserIdReq
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationCenterAdminActivateUser)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.ActivateUser(ctx, req.(*UserIdReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UserOkReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type CenterAdminHTTPClient interface {
+	ActivateUser(ctx context.Context, req *UserIdReq, opts ...http.CallOption) (rsp *UserOkReply, err error)
+	DeactivateUser(ctx context.Context, req *UserIdReq, opts ...http.CallOption) (rsp *UserOkReply, err error)
 	GetUser(ctx context.Context, req *GetUserReq, opts ...http.CallOption) (rsp *GetUserReply, err error)
 	ListUser(ctx context.Context, req *ListUserReq, opts ...http.CallOption) (rsp *ListUserReply, err error)
 	Login(ctx context.Context, req *LoginReq, opts ...http.CallOption) (rsp *LoginReply, err error)
@@ -129,6 +181,32 @@ type CenterAdminHTTPClientImpl struct {
 
 func NewCenterAdminHTTPClient(client *http.Client) CenterAdminHTTPClient {
 	return &CenterAdminHTTPClientImpl{client}
+}
+
+func (c *CenterAdminHTTPClientImpl) ActivateUser(ctx context.Context, in *UserIdReq, opts ...http.CallOption) (*UserOkReply, error) {
+	var out UserOkReply
+	pattern := "/admin/v1/users/{id}/activate"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationCenterAdminActivateUser))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *CenterAdminHTTPClientImpl) DeactivateUser(ctx context.Context, in *UserIdReq, opts ...http.CallOption) (*UserOkReply, error) {
+	var out UserOkReply
+	pattern := "/admin/v1/users/{id}/deactivate"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationCenterAdminDeactivateUser))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
 }
 
 func (c *CenterAdminHTTPClientImpl) GetUser(ctx context.Context, in *GetUserReq, opts ...http.CallOption) (*GetUserReply, error) {
@@ -146,7 +224,7 @@ func (c *CenterAdminHTTPClientImpl) GetUser(ctx context.Context, in *GetUserReq,
 
 func (c *CenterAdminHTTPClientImpl) ListUser(ctx context.Context, in *ListUserReq, opts ...http.CallOption) (*ListUserReply, error) {
 	var out ListUserReply
-	pattern := "/v1/users"
+	pattern := "/admin/v1/users"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationCenterAdminListUser))
 	opts = append(opts, http.PathTemplate(pattern))

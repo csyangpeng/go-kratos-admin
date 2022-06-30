@@ -32,6 +32,7 @@ func (r *userRepo) FindByUsername(ctx context.Context, username string) (*biz.Us
 		return &biz.User{
 			Id:       user.Id,
 			Username: user.Username,
+			IsActive: user.IsActive,
 		}, nil
 	})
 	if err != nil {
@@ -54,4 +55,15 @@ func (r *userRepo) VerifyPassword(ctx context.Context, u *biz.User, password str
 	}
 
 	return nil
+}
+
+func (r *userRepo) Save(ctx context.Context, u *biz.User) error {
+	res, err := r.data.uc.Save(ctx, &userv1.SaveUserReq{
+		Id:       u.Id,
+		Username: u.Username,
+		Password: u.Password,
+	})
+
+	u.Id = res.Id
+	return err
 }

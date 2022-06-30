@@ -11,6 +11,7 @@ import (
 var (
 	ErrLoginFailed    = errors.New("login failed")
 	ErrPasswordFailed = errors.New("password failed")
+	ErrUserDeactivate = errors.New("user is deactivated")
 )
 
 type AuthUseCase struct {
@@ -31,10 +32,16 @@ func (ac *AuthUseCase) Login(ctx context.Context, req *v1.LoginReq) (*v1.LoginRe
 	if err != nil {
 		return nil, v1.ErrorLoginFailed("user not found: %s", err.Error())
 	}
+
+	// check isActive
+	if !user.IsActive {
+		return nil, v1.ErrorLoginFailed(ErrUserDeactivate.Error())
+	}
+
 	// check password
 	err = ac.userRepo.VerifyPassword(ctx, user, req.Password)
 	if err != nil {
-		return nil, v1.ErrorLoginFailed("password not match")
+		return nil, err
 	}
 	// generate token
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

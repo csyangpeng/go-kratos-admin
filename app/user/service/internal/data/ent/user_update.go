@@ -40,6 +40,20 @@ func (uu *UserUpdate) SetPasswordHash(s string) *UserUpdate {
 	return uu
 }
 
+// SetIsActive sets the "is_active" field.
+func (uu *UserUpdate) SetIsActive(b bool) *UserUpdate {
+	uu.mutation.SetIsActive(b)
+	return uu
+}
+
+// SetNillableIsActive sets the "is_active" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableIsActive(b *bool) *UserUpdate {
+	if b != nil {
+		uu.SetIsActive(*b)
+	}
+	return uu
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (uu *UserUpdate) SetCreatedAt(t time.Time) *UserUpdate {
 	uu.mutation.SetCreatedAt(t)
@@ -159,6 +173,13 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldPasswordHash,
 		})
 	}
+	if value, ok := uu.mutation.IsActive(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: user.FieldIsActive,
+		})
+	}
 	if value, ok := uu.mutation.CreatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -201,6 +222,20 @@ func (uuo *UserUpdateOne) SetUsername(s string) *UserUpdateOne {
 // SetPasswordHash sets the "password_hash" field.
 func (uuo *UserUpdateOne) SetPasswordHash(s string) *UserUpdateOne {
 	uuo.mutation.SetPasswordHash(s)
+	return uuo
+}
+
+// SetIsActive sets the "is_active" field.
+func (uuo *UserUpdateOne) SetIsActive(b bool) *UserUpdateOne {
+	uuo.mutation.SetIsActive(b)
+	return uuo
+}
+
+// SetNillableIsActive sets the "is_active" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableIsActive(b *bool) *UserUpdateOne {
+	if b != nil {
+		uuo.SetIsActive(*b)
+	}
 	return uuo
 }
 
@@ -345,6 +380,13 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Type:   field.TypeString,
 			Value:  value,
 			Column: user.FieldPasswordHash,
+		})
+	}
+	if value, ok := uuo.mutation.IsActive(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: user.FieldIsActive,
 		})
 	}
 	if value, ok := uuo.mutation.CreatedAt(); ok {

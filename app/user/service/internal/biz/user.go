@@ -3,6 +3,8 @@ package biz
 import (
 	"context"
 	"errors"
+	"math/rand"
+
 	v1 "github.com/csyangpeng/go-kratos-admin/api/user/service/v1"
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -15,6 +17,7 @@ type User struct {
 	Id       int64
 	Username string
 	Password string
+	IsActive bool
 }
 
 type UserRepo interface {
@@ -23,6 +26,7 @@ type UserRepo interface {
 	CreateUser(ctx context.Context, u *User) (*User, error)
 	VerifyPassword(ctx context.Context, u *User) (bool, error)
 	ListUser(ctx context.Context, pageIndex, pageSize int) ([]*User, int, error)
+	ChangeActive(ctx context.Context, u *User, isActive bool) (bool, error)
 }
 
 type UserUseCase struct {
@@ -43,6 +47,7 @@ func (uc *UserUseCase) Get(ctx context.Context, id int64) (*User, error) {
 
 func (uc *UserUseCase) Create(ctx context.Context, u *User) (*User, error) {
 	out, err := uc.repo.CreateUser(ctx, u)
+	uc.repo.CreateUser(ctx, u)
 	if err != nil {
 		return nil, err
 	}
@@ -52,15 +57,16 @@ func (uc *UserUseCase) Create(ctx context.Context, u *User) (*User, error) {
 
 func (uc *UserUseCase) Save(ctx context.Context, req *v1.SaveUserReq) (*v1.SaveUserReply, error) {
 	user := &User{
+		Id:       rand.Int63(),
 		Username: req.Username,
 		Password: req.Password,
 	}
-	_, err := uc.Create(ctx, user)
+	res, err := uc.Create(ctx, user)
 	if err != nil {
 		return nil, err
 	}
 
-	return &v1.SaveUserReply{Id: user.Id}, nil
+	return &v1.SaveUserReply{Id: res.Id}, nil
 }
 
 func (uc *UserUseCase) VerifyPassword(ctx context.Context, u *User) (bool, error) {
@@ -76,9 +82,27 @@ func (uc *UserUseCase) GetUserByUsername(ctx context.Context, req *v1.GetUserByU
 	return &v1.GetUserByUsernameReply{
 		Id:       user.Id,
 		Username: user.Username,
+		IsActive: user.IsActive,
 	}, nil
 }
 
 func (uc *UserUseCase) List(ctx context.Context, pageIndex, pageSize int) ([]*User, int, error) {
 	return uc.repo.ListUser(ctx, pageIndex, pageSize)
+}
+
+func (uc *UserUseCase) ChangeActive(ctx context.Context, req *v1.ChangeActiveReq) (*v1.ChangeActiveReply, error) {
+	u, err := uc.repo.GetUser(ctx, req.Id)
+	if err != nil || u == nil {
+		return nil, ErrUserNotFound
+	}
+
+	ok, err := uc.repo.ChangeActive(ctx, &User{Id: u.Id, Username: u.Username}, req.IsActive)
+	if err != nil {
+		return nil, err
+	}
+
+	return &v1.ChangeActiveReply{
+		Ok: ok,
+		Id: req.Id,
+	}, nil
 }

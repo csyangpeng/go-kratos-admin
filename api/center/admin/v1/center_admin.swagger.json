@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "api/center/admin/v1/center_admin.proto",
+    "title": "v1/center_admin.proto",
     "version": "version not set"
   },
   "tags": [
@@ -80,38 +80,7 @@
         ]
       }
     },
-    "/admin/v1/users/{id}": {
-      "get": {
-        "operationId": "CenterAdmin_GetUser",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1GetUserReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
-          }
-        ],
-        "tags": [
-          "CenterAdmin"
-        ]
-      }
-    },
-    "/v1/users": {
+    "/admin/v1/users": {
       "get": {
         "operationId": "CenterAdmin_ListUser",
         "responses": {
@@ -148,6 +117,115 @@
           "CenterAdmin"
         ]
       }
+    },
+    "/admin/v1/users/{id}": {
+      "get": {
+        "operationId": "CenterAdmin_GetUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetUserReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "CenterAdmin"
+        ]
+      }
+    },
+    "/admin/v1/users/{id}/activate": {
+      "put": {
+        "operationId": "CenterAdmin_ActivateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UserOkReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "tags": [
+          "CenterAdmin"
+        ]
+      }
+    },
+    "/admin/v1/users/{id}/deactivate": {
+      "put": {
+        "operationId": "CenterAdmin_DeactivateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UserOkReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "tags": [
+          "CenterAdmin"
+        ]
+      }
     }
   },
   "definitions": {
@@ -166,7 +244,7 @@
     "protobufAny": {
       "type": "object",
       "properties": {
-        "type_url": {
+        "typeUrl": {
           "type": "string"
         },
         "value": {
@@ -202,6 +280,9 @@
         },
         "username": {
           "type": "string"
+        },
+        "isActive": {
+          "type": "boolean"
         }
       }
     },
@@ -223,7 +304,7 @@
     "v1LoginReply": {
       "type": "object",
       "properties": {
-        "Token": {
+        "token": {
           "type": "string"
         }
       }
@@ -244,6 +325,14 @@
     },
     "v1LogoutReq": {
       "type": "object"
+    },
+    "v1UserOkReply": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        }
+      }
     }
   }
 }

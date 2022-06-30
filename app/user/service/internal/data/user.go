@@ -4,12 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
+
 	"github.com/csyangpeng/go-kratos-admin/app/user/service/internal/biz"
 	"github.com/csyangpeng/go-kratos-admin/app/user/service/internal/data/ent"
 	"github.com/csyangpeng/go-kratos-admin/app/user/service/internal/data/ent/user"
 	"github.com/csyangpeng/go-kratos-admin/app/user/service/internal/pkg/util"
 	"github.com/go-kratos/kratos/v2/log"
-	"time"
 )
 
 var _ biz.UserRepo = (*userRepo)(nil)
@@ -33,16 +34,18 @@ func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 func (r *userRepo) GetUser(ctx context.Context, id int64) (*biz.User, error) {
 	cacheKey := cacheKey(fmt.Sprintf("%d", id))
 	target, err := r.getUserFromCache(ctx, cacheKey)
-	if err != nil {
+	if err != nil || target == nil {
 		target, err = r.data.db.User.Get(ctx, id)
-		if err != nil {
+		if err != nil || target == nil {
 			return nil, biz.ErrUserNotFound
 		}
+
 		r.setUserCache(ctx, target, cacheKey)
 	}
 	return &biz.User{
 		Id:       target.ID,
 		Username: target.Username,
+		IsActive: target.IsActive,
 	}, nil
 }
 
@@ -64,6 +67,7 @@ func (r *userRepo) FindByUsername(ctx context.Context, username string) (*biz.Us
 	return &biz.User{
 		Id:       target.ID,
 		Username: target.Username,
+		IsActive: target.IsActive,
 	}, nil
 }
 
@@ -110,6 +114,11 @@ func (r *userRepo) setUserCache(ctx context.Context, user *ent.User, key string)
 	}
 }
 
+func (r *userRepo) resetUserCache(ctx context.Context, u *ent.User) {
+	r.setUserCache(ctx, u, cacheKey(u.Username))
+	r.setUserCache(ctx, u, cacheKey(fmt.Sprintf("%d", u.ID)))
+}
+
 func (r *userRepo) VerifyPassword(ctx context.Context, u *biz.User) (bool, error) {
 	po, err := r.data.db.User.Query().Where(user.UsernameEQ(u.Username)).Only(ctx)
 	if err != nil {
@@ -141,6 +150,22 @@ func (r *userRepo) ListUser(ctx context.Context, pageIndex, pageSize int) ([]*bi
 	return rv, total, nil
 }
 
+// ChangeActive implements biz.UserRepo
+func (r *userRepo) ChangeActive(ctx context.Context, u *biz.User, isActive bool) (bool, error) {
+	uv, err := r.data.db.User.
+		UpdateOneID(u.Id).
+		SetIsActive(isActive).
+		Save(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	// reset cache
+	r.resetUserCache(ctx, uv)
+
+	return true, nil
+}
+
 func (r *userRepo) paginate(page, pageSize int) *ent.UserQuery {
 	if page == 0 {
 		page = 1
@@ -153,6 +178,6 @@ func (r *userRepo) paginate(page, pageSize int) *ent.UserQuery {
 	}
 
 	offset := (page - 1) * pageSize
-	return r.data.db.User.Query().Offset(offset).Limit(pageSize)
 
+	return r.data.db.User.Query().Offset(offset).Limit(pageSize)
 }

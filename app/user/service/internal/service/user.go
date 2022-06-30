@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	v1 "github.com/csyangpeng/go-kratos-admin/api/user/service/v1"
 	"github.com/csyangpeng/go-kratos-admin/app/user/service/internal/biz"
 )
@@ -67,4 +68,8 @@ func (s *UserService) ListUser(ctx context.Context, req *v1.ListUserReq) (*v1.Li
 	}
 
 	return res, nil
+}
+
+func (s *UserService) ChangeActive(ctx context.Context, req *v1.ChangeActiveReq) (*v1.ChangeActiveReply, error) {
+	return s.uc.ChangeActive(ctx, req)
 }

@@ -11,6 +11,7 @@ service User {
 	rpc GetUserByUsername(GetUserByUsernameReq) returns (GetUserByUsernameReply);
 	rpc ListUser (ListUserReq) returns (ListUserReply);
 	rpc VerifyPassword (VerifyPasswordReq) returns (VerifyPasswordReply);
+	rpc ChangeActive(ChangeActiveReq) returns (ChangeActiveReply);
 }
 
 message CreateUserReq {
@@ -38,6 +39,7 @@ message GetUserReq {
 message GetUserReply {
 	int64 id = 1;
 	string username = 2;
+	bool isActive = 3;
 }
 
 message ListUserReq {
@@ -70,4 +72,15 @@ message GetUserByUsernameReq {
 message GetUserByUsernameReply {
 	int64 id = 1;
 	string username = 2;
+	bool isActive = 3;
+}
+
+message ChangeActiveReq {
+	int64 id = 1;
+	bool isActive = 2;
+}
+
+message ChangeActiveReply {
+	bool ok = 1;
+	int64 id = 2;
 }

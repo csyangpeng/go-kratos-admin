@@ -1,7 +1,7 @@
-FROM golang:1.16 AS builder
+FROM golang:1.18.3 AS builder
 
 COPY . /src
-WORKDIR /src
+WORKDIR /src/app/center/admin
 
 RUN GOPROXY=https://goproxy.cn make build
 
@@ -13,11 +13,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         && rm -rf /var/lib/apt/lists/ \
         && apt-get autoremove -y && apt-get autoclean -y
 
-COPY --from=builder /src/bin /app
+COPY --from=builder /src/app/center/admin/bin /app
 
 WORKDIR /app
 
-EXPOSE 8000
+EXPOSE 8001
 EXPOSE 9000
 VOLUME /data/conf
 

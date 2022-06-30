@@ -178,7 +178,7 @@ func (m *LoginReply) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Id
+	// no validation rules for Token
 
 	if len(errors) > 0 {
 		return LoginReplyMultiError(errors)

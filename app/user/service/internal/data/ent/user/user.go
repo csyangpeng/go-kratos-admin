@@ -15,6 +15,8 @@ const (
 	FieldUsername = "username"
 	// FieldPasswordHash holds the string denoting the password_hash field in the database.
 	FieldPasswordHash = "password_hash"
+	// FieldIsActive holds the string denoting the is_active field in the database.
+	FieldIsActive = "is_active"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -28,6 +30,7 @@ var Columns = []string{
 	FieldID,
 	FieldUsername,
 	FieldPasswordHash,
+	FieldIsActive,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
@@ -43,6 +46,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultIsActive holds the default value on creation for the "is_active" field.
+	DefaultIsActive bool
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.

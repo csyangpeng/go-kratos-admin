@@ -64,7 +64,7 @@ func NewRegistrar(conf *conf.Registry) registry.Registrar {
 	return r
 }
 
-func NewUserServiceClient(r registry.Discovery, ac *conf.Auth) userv1.UserClient {
+func NewUserServiceClient(ac *conf.Auth, r registry.Discovery) userv1.UserClient {
 	conn, err := grpc.DialInsecure(
 		context.Background(),
 		grpc.WithEndpoint("discovery:///gka.user.service"),

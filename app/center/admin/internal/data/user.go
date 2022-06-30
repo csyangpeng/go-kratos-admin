@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"fmt"
+
 	v1 "github.com/csyangpeng/go-kratos-admin/api/center/admin/v1"
 	userv1 "github.com/csyangpeng/go-kratos-admin/api/user/service/v1"
 	"github.com/csyangpeng/go-kratos-admin/app/center/admin/internal/biz"
@@ -27,12 +28,14 @@ func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 func (r *userRepo) GetUser(ctx context.Context, id int64) (*biz.User, error) {
 	do, err, _ := r.sg.Do(fmt.Sprintf("get_user_id_%d", id), func() (interface{}, error) {
 		u, err := r.data.uc.GetUser(ctx, &userv1.GetUserReq{Id: id})
-		if err == nil {
+
+		if err != nil {
 			return nil, biz.ErrUserNotFound
 		}
 		return &biz.User{
 			Id:       u.Id,
 			Username: u.Username,
+			IsActive: u.IsActive,
 		}, nil
 	})
 	if err != nil {
@@ -43,14 +46,16 @@ func (r *userRepo) GetUser(ctx context.Context, id int64) (*biz.User, error) {
 }
 
 func (r *userRepo) FindByUsername(ctx context.Context, username string) (*biz.User, error) {
+	r.log.Info(username)
 	do, err, _ := r.sg.Do(fmt.Sprintf("find_user_by_username_%s", username), func() (interface{}, error) {
 		user, err := r.data.uc.GetUserByUsername(ctx, &userv1.GetUserByUsernameReq{Username: username})
 		if err != nil {
-			return nil, biz.ErrUserNotFound
+			return nil, err
 		}
 		return &biz.User{
 			Id:       user.Id,
 			Username: user.Username,
+			IsActive: user.IsActive,
 		}, nil
 	})
 	if err != nil {
@@ -62,7 +67,7 @@ func (r *userRepo) FindByUsername(ctx context.Context, username string) (*biz.Us
 func (r *userRepo) VerifyPassword(ctx context.Context, u *biz.User, password string) error {
 	rv, err := r.data.uc.VerifyPassword(ctx, &userv1.VerifyPasswordReq{
 		Username: u.Username,
-		Password: u.Password,
+		Password: password,
 	})
 	if err != nil {
 		return err
@@ -92,4 +97,14 @@ func (r *userRepo) ListUser(ctx context.Context, req *v1.ListUserReq) (*v1.ListU
 	}
 
 	return v, nil
+}
+
+// ChangeActive implements biz.UserRepo
+func (r *userRepo) ChangeActive(ctx context.Context, id int64, active bool) (bool, error) {
+	res, err := r.data.uc.ChangeActive(ctx, &userv1.ChangeActiveReq{Id: id, IsActive: active})
+	if err != nil {
+		return false, err
+	}
+
+	return res.Ok, nil
 }

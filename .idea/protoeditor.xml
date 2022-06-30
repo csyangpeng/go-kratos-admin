@@ -8,7 +8,10 @@
           <option name="location" value="file://$USER_HOME$/Library/Caches/JetBrains/GoLand2022.2/protoeditor" />
         </ImportPathEntry>
         <ImportPathEntry>
-          <option name="location" value="file://$PROJECT_DIR$/../beep-shop/third_party" />
+          <option name="location" value="file://$PROJECT_DIR$/../../../../pkg/mod/github.com/go-kratos/kratos/v2@v2.3.1/api" />
+        </ImportPathEntry>
+        <ImportPathEntry>
+          <option name="location" value="file://$PROJECT_DIR$/../../../../pkg/mod/github.com/go-kratos/kratos/v2@v2.3.1/third_party" />
         </ImportPathEntry>
       </list>
     </option>

@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "api/user/service/v1/user.proto",
+    "title": "v1/user.proto",
     "version": "version not set"
   },
   "tags": [
@@ -32,7 +32,7 @@
     "protobufAny": {
       "type": "object",
       "properties": {
-        "type_url": {
+        "typeUrl": {
           "type": "string"
         },
         "value": {
@@ -59,6 +59,18 @@
         }
       }
     },
+    "v1ChangeActiveReply": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
     "v1CreateUserReply": {
       "type": "object",
       "properties": {
@@ -80,6 +92,9 @@
         },
         "username": {
           "type": "string"
+        },
+        "isActive": {
+          "type": "boolean"
         }
       }
     },
@@ -92,6 +107,9 @@
         },
         "username": {
           "type": "string"
+        },
+        "isActive": {
+          "type": "boolean"
         }
       }
     },
@@ -103,6 +121,10 @@
           "items": {
             "$ref": "#/definitions/ListUserReplyUser"
           }
+        },
+        "total": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },

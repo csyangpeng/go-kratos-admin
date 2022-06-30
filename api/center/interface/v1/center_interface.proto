@@ -30,8 +30,8 @@ service CenterInterface {
 }
 
 message RegisterReq {
-  string username = 1 [(validate.rules).string.min_len = 4];
-  string password = 2 [(validate.rules).string.min_len = 5];
+  string username = 1;
+  string password = 2;
 }
 
 message RegisterReply {
